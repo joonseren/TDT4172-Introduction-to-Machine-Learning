@@ -67,9 +67,9 @@ class LogisticRegression():
         return self._sigmoid(self.b + self.w0*X[:, 0] + self.w1*X[:, 1])
     
     def predict2(self, X):
-        print("X shape:", X.shape)                     # (n_samples, n_features)
-        print("weights shape:", self.wheights.shape)    # (n_features+1,)
-        print("w (uten bias) shape:", self.wheights[1:].shape)  # (n_features,)
+        #print("X shape:", X.shape)                     # (n_samples, n_features)
+        #print("weights shape:", self.wheights.shape)    # (n_features+1,)
+        #print("w (uten bias) shape:", self.wheights[1:].shape)  # (n_features,)
         return self._sigmoid(self.wheights[0] + X @ self.wheights[1:])
 
     def accuracy1(self, X, y, threshold=0.5):
@@ -81,4 +81,32 @@ class LogisticRegression():
         y_hat = self.predict2(X)
         y_pred = (y_hat >= threshold).astype(int)
         return np.mean(y == y_pred)
+    
+    def roc_curve(self, X, y):
+
+        y_score = self.predict2(X)
+
+        # sortere fra høy til lav score
+        order = np.argsort(-y_score)
+        y_sorted = y[order]
+
+        p = (y == 1).sum()
+        n = (y == 0).sum()
+
+        p = p if p > 0 else 1  # unngå deling på 0
+        n = n if n > 0 else 1
+
+        tp = np.cumsum(y_sorted == 1)
+        fp = np.cumsum(y_sorted == 0)
+
+        tpr = tp/p
+        fpr = fp/n
+
+        tpr = np.r_[0.0, tpr, 1.0]
+        fpr = np.r_[0.0, fpr, 1.0]
+
+        auc = np.trapz(tpr, fpr)
+
+        return tpr, fpr, auc
+    
     

@@ -26,3 +26,6 @@ class NexusXGB:
     def predict(self, X):
         y_log_pred = self.model.predict(X)
         return np.expm1(y_log_pred)  # inverter log1p
+    
+    def hey():
+        print("Hey")

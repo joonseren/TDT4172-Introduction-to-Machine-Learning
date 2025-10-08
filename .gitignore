@@ -208,7 +208,6 @@ __marimo__/
 
 
 
-# Ignore CSV files in assignment or data folders
-Assignment2/*.csv
-data/**/*.csv
-datasets/**/*.csv
+# Ignore all CSV and data files inside any "data" folders
+**/data/**
+!**/data/.gitkeep
